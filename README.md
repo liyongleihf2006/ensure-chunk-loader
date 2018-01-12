@@ -79,6 +79,7 @@ To use this'loader', you must ensure that the name of folders are the same as th
 |options|object|undefined|glob options|
 |page-extname|string|"html"|Page suffix|
 |script-extname|string|"js"|Script suffix|
+
 pattern:Using glob pattern，it is the relative path to the value of context in webpack.Pattern is the glob of the path of the resource folder, so it ends with "/"
 
 **the router**
