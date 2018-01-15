@@ -18,16 +18,23 @@ module.exports = function() {
         var script = loaderUtils.urlToRequest(path.join(chunk,path.basename(dir)+"."+scriptSuffix));
         result+= 
         `
-        require.ensure(["${page}","${script}"],function(require){
-            routers["${chunk}"]={
-                "page":()=>{
-                    return require("${page}");
-                },
-                "script":()=>{
-                    return require("${script}");
-                }
+        routers["${chunk}"]=function(){
+            var resolve,reject,promise = new Promise(function(res,rej){
+                resolve = res;
+                reject = rej;
+            });
+            try{
+                require.ensure(["${page}","${script}"],function(require){
+                    resolve({
+                        "page":require("${page}"),
+                        "script":require("${script}")
+                    });
+                },"${chunk}");
+            }catch(err){
+                reject(err);
             }
-        },"${chunk}");
+            return promise;
+        }
         `
     });
     result+=`module.exports = routers;`;
