@@ -1,6 +1,6 @@
 {
   "name": "ensure-chunk-loader",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Get the corresponding page resource and the corresponding script resource under the folders, and return the router",
   "main": "index.js",
   "scripts": {

@@ -63,8 +63,8 @@ index.js
 ```
 var router = require("ensure-chunk-loader?pattern=./modules/*/&page-extname=html&script-extname=js!");
 router["./modules/first"]().then(function(chunk){
-    console.log(chunk["page"]);
-    console.log(chunk["script"]);
+    console.log(chunk["page"]());
+    console.log(chunk["script"]());
 });
 ```  
 **notes**
@@ -95,4 +95,4 @@ the 'router' is a Object,and its structure is like this:
   "other key(The path of a folder relative to the context)":fn
 }
 ``` 
-the `fn`'s return value is a instance of Promise,its resolve's parameter is `{page:page,script:script}` whitch equivalent to a similar as like `{page:require["./modules/first/first.html"],script:require("./modules/first/first.js")}`
+the `fn`'s return value is a instance of Promise,its resolve's parameter is `{page:page,script:script}` whitch equivalent to a similar as like `{page:function(){return require("./modules/first/first.html")},script:function(){return require("./modules/first/first.js")}}`

@@ -26,8 +26,8 @@ module.exports = function() {
             try{
                 require.ensure(["${page}","${script}"],function(require){
                     resolve({
-                        "page":require("${page}"),
-                        "script":require("${script}")
+                        "page":function(){return require("${page}")},
+                        "script":function(){return require("${script}")}
                     });
                 },"${chunk}");
             }catch(err){
