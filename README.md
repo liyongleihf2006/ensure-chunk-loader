@@ -62,8 +62,10 @@ module.exports={
 index.js
 ```
 var router = require("ensure-chunk-loader?pattern=./modules/*/&page-extname=html&script-extname=js!");
-var firstPage = router["./modules/first"]["page"]();
-var firstScript = router["./modules/first"]["script"]();
+router["./modules/first"]().then(function(chunk){
+    console.log(chunk["page"]());
+    console.log(chunk["script"]());
+});
 ```  
 **notes**
 
@@ -88,18 +90,9 @@ when use this loader，the return value I call 'router'.
 the 'router' is a Object,and its structure is like this:
 ```
 {
-  "./modules/first":{
-    "page":fn,
-    "script":fn
-  },
-  "./modules/second":{
-    "page":fn,
-    "script":fn
-  },
-  "other key(The path of a folder relative to the context)":{
-    "page":fn,
-    "script":fn
-  }
+  "./modules/first":fn,
+  "./modules/second":fn,
+  "other key(The path of a folder relative to the context)":fn
 }
-```  
-So when called`router["./modules/first"]["page"]()`will as execute `require("./modules/first/first.html")`and when called `router["./modules/first"]["script"]()`will as execute `require("./modules/first/first.js")`
+``` 
+the `fn`'s return value is a instance of Promise,its resolve's parameter is `{page:page,script:script}` whitch equivalent to a similar as like `{page:function(){return require("./modules/first/first.html")},script:function(){return require("./modules/first/first.js")}}`
