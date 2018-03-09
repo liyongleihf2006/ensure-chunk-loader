@@ -10,7 +10,7 @@ module.exports = function() {
     var globOptions = options.options;
     var pageSuffix = options["page-extname"];
     var scriptSuffix = options["script-extname"];
-    var context = this.options.context;
+    var context = this.rootContext||this.options.context;
     var result = `var routers = {};`;
     glob.sync(path.join(context,pattern),globOptions).forEach(function(dir){
         var chunk = loaderUtils.urlToRequest(path.relative(context,dir));
@@ -18,16 +18,23 @@ module.exports = function() {
         var script = loaderUtils.urlToRequest(path.join(chunk,path.basename(dir)+"."+scriptSuffix));
         result+= 
         `
-        require.ensure(["${page}","${script}"],function(require){
-            routers["${chunk}"]={
-                "page":()=>{
-                    return require("${page}");
-                },
-                "script":()=>{
-                    return require("${script}");
-                }
+        routers["${chunk}"]=function(){
+            var resolve,reject,promise = new Promise(function(res,rej){
+                resolve = res;
+                reject = rej;
+            });
+            try{
+                require.ensure(["${page}","${script}"],function(require){
+                    resolve({
+                        "page":function(){return require("${page}")},
+                        "script":function(){return require("${script}")}
+                    });
+                },"${chunk}");
+            }catch(err){
+                reject(err);
             }
-        },"${chunk}");
+            return promise;
+        }
         `
     });
     result+=`module.exports = routers;`;
